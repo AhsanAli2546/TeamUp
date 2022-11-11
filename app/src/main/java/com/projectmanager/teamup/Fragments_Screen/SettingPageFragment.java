@@ -1,4 +1,4 @@
-package com.projectmanager.teamup;
+package com.projectmanager.teamup.Fragments_Screen;
 
 import android.os.Bundle;
 
@@ -8,12 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-public class HomePageFragment extends Fragment {
-
+import com.projectmanager.teamup.R;
 
 
-    public HomePageFragment() {
+public class SettingPageFragment extends Fragment {
+
+
+    public SettingPageFragment() {
         // Required empty public constructor
     }
 
@@ -23,6 +24,6 @@ public class HomePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        return inflater.inflate(R.layout.fragment_setting_page, container, false);
     }
 }

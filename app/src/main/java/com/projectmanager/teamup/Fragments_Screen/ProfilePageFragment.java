@@ -1,4 +1,4 @@
-package com.projectmanager.teamup;
+package com.projectmanager.teamup.Fragments_Screen;
 
 import android.os.Bundle;
 
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.projectmanager.teamup.R;
 
 
 public class ProfilePageFragment extends Fragment {
