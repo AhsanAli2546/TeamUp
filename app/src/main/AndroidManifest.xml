@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TeamUp"
         tools:targetApi="31">
         <activity
-            android:name=".Acticvity_Screen.Register_Screen"
+            android:name=".Acticvity_Screen.Member_activity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Acticvity_Screen.Register_Screen"
+            android:exported="true"/>
+
+
+        <activity
             android:name=".Acticvity_Screen.Login_Screen"
             android:exported="false" />
         <activity
             android:name=".Acticvity_Screen.MainActivity"
-            android:exported="false"/>
-
+            android:exported="false" />
     </application>
 
 </manifest>

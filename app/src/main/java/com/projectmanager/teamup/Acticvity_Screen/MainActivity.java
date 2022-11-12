@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.projectmanager.teamup.Fragments_Screen.CreateProjectFragment;
 import com.projectmanager.teamup.Fragments_Screen.HomePageFragment;
 import com.projectmanager.teamup.Fragments_Screen.ProfilePageFragment;
+import com.projectmanager.teamup.Fragments_Screen.SearchFragment;
 import com.projectmanager.teamup.Fragments_Screen.SettingPageFragment;
 import com.projectmanager.teamup.R;
 
@@ -53,9 +54,13 @@ BottomNavigationView bottomNavigationView;
 
 
     }
+
     public void loadFragment(Fragment fragment, boolean flag){
+
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
+
+
         if(flag==true){
             ft.add(R.id.container,fragment);
         }
