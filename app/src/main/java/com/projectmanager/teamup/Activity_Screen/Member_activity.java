@@ -1,4 +1,4 @@
-package com.projectmanager.teamup.Acticvity_Screen;
+package com.projectmanager.teamup.Activity_Screen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.projectmanager.teamup.Fragments_Screen.SearchFragment;
+import com.projectmanager.teamup.Fragments_Screen.CreateProjectFragment;
 import com.projectmanager.teamup.R;
 
 public class Member_activity extends AppCompatActivity {
@@ -27,10 +27,10 @@ EditText editText;
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String Name = "";
+               String Name = "";
                 Bundle bundle = new Bundle();
                 Name = editText.getText().toString();
-                Fragment fragment = new SearchFragment();
+                Fragment fragment = new CreateProjectFragment();
                 bundle.putString("arg",Name);
                 fragment.setArguments(bundle);
                 FragmentManager fm = getSupportFragmentManager();

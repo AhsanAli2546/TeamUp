@@ -1,4 +1,4 @@
-package com.projectmanager.teamup.Acticvity_Screen;
+package com.projectmanager.teamup.Activity_Screen;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.projectmanager.teamup.Fragments_Screen.CreateProjectFragment;
 import com.projectmanager.teamup.Fragments_Screen.HomePageFragment;
 import com.projectmanager.teamup.Fragments_Screen.ProfilePageFragment;
-import com.projectmanager.teamup.Fragments_Screen.SearchFragment;
 import com.projectmanager.teamup.Fragments_Screen.SettingPageFragment;
 import com.projectmanager.teamup.R;
 

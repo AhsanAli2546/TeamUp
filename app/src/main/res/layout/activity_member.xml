@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/Frame_2"
-    tools:context=".Acticvity_Screen.Member_activity">
+    tools:context=".Activity_Screen.Member_activity">
 
     <EditText
         android:id="@+id/Name"

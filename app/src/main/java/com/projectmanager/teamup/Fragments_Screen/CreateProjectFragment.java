@@ -1,13 +1,10 @@
 package com.projectmanager.teamup.Fragments_Screen;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +13,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.projectmanager.teamup.Acticvity_Screen.MainActivity;
-import com.projectmanager.teamup.Acticvity_Screen.Member_activity;
+import com.projectmanager.teamup.Activity_Screen.Member_activity;
 import com.projectmanager.teamup.R;
 
 import java.util.Calendar;
@@ -105,6 +101,7 @@ public class CreateProjectFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     Toast.makeText(getContext(), Next, Toast.LENGTH_SHORT).show();
+
                 } catch (Exception e) {
                     Toast.makeText(getContext(), "Please Fill The Full Foam", Toast.LENGTH_SHORT).show();
                     e.fillInStackTrace();
@@ -117,9 +114,7 @@ public class CreateProjectFragment extends Fragment {
             public void onClick(View view) {
                 try {
 
-
-
-//
+                    ((Member_activity) getActivity()).FragmentMethod();
 
                 } catch (Exception e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
