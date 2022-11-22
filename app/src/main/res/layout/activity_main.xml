@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/conta"
+    tools:context=".Activity_Screen.MainActivity">
+<FrameLayout
+    android:layout_marginBottom="?attr/actionBarSize"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/container"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/navibottom"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp"
+        app:menu="@menu/menu"
+        tools:ignore="BottomAppBar" />
+</RelativeLayout>

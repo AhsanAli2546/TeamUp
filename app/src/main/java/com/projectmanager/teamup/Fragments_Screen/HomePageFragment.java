@@ -1,0 +1,111 @@
+package com.projectmanager.teamup.Fragments_Screen;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.projectmanager.teamup.Activity_Screen.CardView;
+import com.projectmanager.teamup.Adapter.CardAdapter;
+import com.projectmanager.teamup.Modal.CardModal;
+import com.projectmanager.teamup.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class HomePageFragment extends Fragment {
+
+    private FirebaseAuth mAuth;
+    Button btnCreate;
+    private CardAdapter adapter;
+    private ArrayList<CardModal> arrayList;
+    private FirebaseFirestore db;
+    TextView textView;
+    public HomePageFragment() {
+        // Required empty public constructor
+    }
+    RecyclerView recyclerView;
+//    ArrayList <Object> list;
+//    ArrayList <Object> getList(){
+//        list = new ArrayList<>();
+////        list.add(new CardModal(projectName, "C++ Language"));
+////        list.add(new CardModal(projectName, "C++ Language"));
+////        list.add(new CardModal(projectName, "C++ Language"));
+////        list.add(new CardModal(projectName, "C++ Language"));
+//
+//        return list;
+//    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        arrayList = new ArrayList<>();
+
+        recyclerView = view.findViewById(R.id.container);
+        recyclerView.setHasFixedSize(true);
+        arrayList = new ArrayList<>();
+
+//            list.add(new CardModal("C++ Language"));
+//            list.add(new CardModal("C++ Language"));
+//            list.add(new CardModal("C++ Language"));
+//            list.add(new CardModal("C++ Language"));
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        //creating recyclerview adapter
+        adapter = new CardAdapter(arrayList, getContext());
+        //setting adapter to recyclerview
+        recyclerView.setAdapter(adapter);
+        db.collection("TeamUp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+//                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                    for (DocumentSnapshot d : list) {
+                        // after getting this list we are passing
+                        // that list to our object class.
+                        CardModal c = d.toObject(CardModal.class);
+//                        CardModal c = d.toObject(CardModal.class);
+
+                        // and we will pass this object class
+                        // inside our arraylist which we have
+                        // created for recycler view.
+                        arrayList.add(c);
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "no Data Found in Database", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        return view;
+    }
+}
