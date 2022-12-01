@@ -91,6 +91,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     }
 
+    public void setSearch(ArrayList<CardModal> arrayList) {
+        this.cardModals=arrayList;
+        notifyDataSetChanged();
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView TVText;
         Button DetBtn,BtnShare;

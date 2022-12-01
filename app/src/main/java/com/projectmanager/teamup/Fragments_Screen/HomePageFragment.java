@@ -3,6 +3,7 @@ package com.projectmanager.teamup.Fragments_Screen;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +37,7 @@ public class HomePageFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     Button btnCreate;
+    SearchView idSearch;
     FloatingActionButton floatingActionButton;
     private CardAdapter adapter;
     private ArrayList<CardModal> arrayList;
@@ -48,22 +50,14 @@ public class HomePageFragment extends Fragment {
     }
 
     RecyclerView recyclerView;
-//    ArrayList <Object> list;
-//    ArrayList <Object> getList(){
-//        list = new ArrayList<>();
-////        list.add(new CardModal(projectName, "C++ Language"));
-////        list.add(new CardModal(projectName, "C++ Language"));
-////        list.add(new CardModal(projectName, "C++ Language"));
-////        list.add(new CardModal(projectName, "C++ Language"));
-//
-//        return list;
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+        idSearch = view.findViewById(R.id.idSearch);
+        idSearch.clearFocus();
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         progressBar = view.findViewById(R.id.loading);
@@ -123,6 +117,35 @@ public class HomePageFragment extends Fragment {
                 fm.replace(R.id.container, f).commit();
             }
         });
+        idSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                filterList(newText);
+                return true;
+            }
+        });
         return view;
+    }
+
+    private void filterList(String newText) {
+        ArrayList<CardModal> list = new ArrayList<>();
+        for (CardModal cardModal : arrayList) {
+            if (cardModal.getTVTitle().toLowerCase().contains(newText.toLowerCase())) {
+                list.add(cardModal);
+
+            }
+
+        }
+        if (list.isEmpty()) {
+            Toast.makeText(getContext(), "No Data Found", Toast.LENGTH_SHORT).show();
+        } else {
+            adapter.setSearch(list);
+        }
     }
 }
