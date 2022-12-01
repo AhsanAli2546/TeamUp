@@ -3,6 +3,7 @@ package com.projectmanager.teamup.Activity_Screen;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -16,12 +17,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.projectmanager.teamup.Fragments_Screen.ProfilePageFragment;
 import com.projectmanager.teamup.R;
 
 public class Login_Screen extends AppCompatActivity {
@@ -33,6 +38,8 @@ public class Login_Screen extends AppCompatActivity {
     private TextView newUserTV, ForgetPasswordTV;
     private FirebaseAuth mAuth;
     private ProgressBar loadingPB;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,8 @@ public class Login_Screen extends AppCompatActivity {
         ForgetPasswordTV = findViewById(R.id.ForgetPassword);
         mAuth = FirebaseAuth.getInstance();
         loadingPB = findViewById(R.id.idProgressBar);
+        sharedPreferences = getSharedPreferences("shared", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         // adding click listener for our new user tv.
         newUserTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,43 +64,54 @@ public class Login_Screen extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        if (sharedPreferences.contains("email")) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        } else {
+            // adding on click listener for our login button.
+            loginBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        // adding on click listener for our login button.
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // hiding our progress bar.
-                loadingPB.setVisibility(View.VISIBLE);
-                // getting data from our edit text on below line.
-                String email = userNameEdt.getText().toString();
-                String password = passwordEdt.getText().toString();
-                // on below line validating the text input.
-                if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
-                    Toast.makeText(Login_Screen.this, "Please enter your credentials..", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                // on below line we are calling a sign in method and passing email and password to it.
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        // on below line we are checking if the task is success or not.
-                        if (task.isSuccessful()) {
-                            // on below line we are hiding our progress bar.
-                            loadingPB.setVisibility(View.GONE);
-                            Toast.makeText(Login_Screen.this, "Login Successful..", Toast.LENGTH_SHORT).show();
-                            // on below line we are opening our mainactivity.
-                            Intent i = new Intent(Login_Screen.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            // hiding our progress bar and displaying a toast message.
-                            loadingPB.setVisibility(View.GONE);
-                            Toast.makeText(Login_Screen.this, "Please enter valid user credentials..", Toast.LENGTH_SHORT).show();
-                        }
+                    // hiding our progress bar.
+                    loadingPB.setVisibility(View.VISIBLE);
+                    // getting data from our edit text on below line.
+                    String email = userNameEdt.getText().toString();
+                    String password = passwordEdt.getText().toString();
+                    editor.putString("email", email);
+                    editor.putString("password", password);
+                    editor.commit();
+                    // on below line validating the text input.
+                    if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
+                        Toast.makeText(Login_Screen.this, "Please enter your credentials..", Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                });
-            }
-        });
+                    // on below line we are calling a sign in method and passing email and password to it.
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            // on below line we are checking if the task is success or not.
+                            if (task.isSuccessful()) {
+                                // on below line we are hiding our progress bar.
+                                loadingPB.setVisibility(View.GONE);
+                                Toast.makeText(Login_Screen.this, "Login Successful..", Toast.LENGTH_SHORT).show();
+//                                Fragment  f = new ProfilePageFragment();
+//                                FragmentManager fm= getSupportFragmentManager();
+//                                FragmentTransaction ft = fm.beginTransaction().add(R.id.container,f);
+//                                ft.commit();
+//                                // on below line we are opening our mainactivity.
+                                Intent i = new Intent(Login_Screen.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
+                            } else {
+                                // hiding our progress bar and displaying a toast message.
+                                loadingPB.setVisibility(View.GONE);
+                                Toast.makeText(Login_Screen.this, "Please enter valid user credentials..", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
         ForgetPasswordTV.setOnClickListener(view -> {
 
             showRecoverPasswordDialog();
@@ -100,20 +120,20 @@ public class Login_Screen extends AppCompatActivity {
     }
 
     private void showRecoverPasswordDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Recover Password");
-        ConstraintLayout linearLayout=new ConstraintLayout(this);
-        final EditText emailet= new EditText(this);
+        ConstraintLayout linearLayout = new ConstraintLayout(this);
+        final EditText emailet = new EditText(this);
         emailet.setText("Email");
         emailet.setMinEms(16);
         emailet.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         linearLayout.addView(emailet);
-        linearLayout.setPadding(10,10,10,10);
+        linearLayout.setPadding(10, 10, 10, 10);
         builder.setView(linearLayout);
         builder.setPositiveButton("Recover", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String email=emailet.getText().toString().trim();
+                String email = emailet.getText().toString().trim();
                 beginRecovery(email);
             }
         });
@@ -131,23 +151,21 @@ public class Login_Screen extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     // if isSuccessful then done message will be shown
                     // and you can change the password
 
                     loadingPB.setVisibility(View.GONE);
-                    Toast.makeText(Login_Screen.this,"Done sent",Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(Login_Screen.this,"Error Occurred",Toast.LENGTH_LONG).show();
+                    Toast.makeText(Login_Screen.this, "Done sent", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(Login_Screen.this, "Error Occurred", Toast.LENGTH_LONG).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 loadingPB.setVisibility(View.GONE);
-                Toast.makeText(Login_Screen.this,"Error Failed: "+e.getMessage() , Toast.LENGTH_LONG).show();
+                Toast.makeText(Login_Screen.this, "Error Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

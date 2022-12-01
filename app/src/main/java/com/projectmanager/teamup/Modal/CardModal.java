@@ -5,10 +5,10 @@ public class CardModal {
     String Description;
 
     CardModal() {
-
+//for firebase
     }
 
-    public CardModal(String Description, String TVTitle) {
+    public CardModal(String TVTitle,String Description) {
         this.TVTitle = TVTitle;
         this.Description = Description;
     }

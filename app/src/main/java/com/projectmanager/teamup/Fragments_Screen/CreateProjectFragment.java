@@ -1,7 +1,5 @@
 package com.projectmanager.teamup.Fragments_Screen;
 
-import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,30 +12,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.projectmanager.teamup.Activity_Screen.CardView;
-import com.projectmanager.teamup.Activity_Screen.Member_activity;
 import com.projectmanager.teamup.Modal.CardModal;
 import com.projectmanager.teamup.R;
 
-import java.util.Calendar;
-
 public class CreateProjectFragment extends Fragment {
-//    Button btnCalender, BtnSubmit, AddBtnMember;
+    //    Button btnCalender, BtnSubmit, AddBtnMember;
 //    TextView ViewDateTV;
     String Next;
     private Button TimeStartBtn, btnContinue;
     private EditText editTextProjectName, editTextDescription;
-    private TextView idTVTime;
+    private TextView idTVTime, idTVName;
+    private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
     public String ProjectName, Description, Name;
     private FirebaseFirestore db;
     private static final String ARG_PARAM1 = "param1";
@@ -51,6 +49,7 @@ public class CreateProjectFragment extends Fragment {
     public CreateProjectFragment() {
         // Required empty public constructor
     }
+
     public static SearchFragment newInstance(String param1, String param2) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -75,30 +74,49 @@ public class CreateProjectFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_create_project, container, false);
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        idTVName = view.findViewById(R.id.idTVName);
         TimeStartBtn = view.findViewById(R.id.calenderBtn);
         idTVTime = view.findViewById(R.id.idTVDueDate);
         btnContinue = view.findViewById(R.id.btnContinue);
         editTextDescription = view.findViewById(R.id.idETDescription);
         editTextProjectName = view.findViewById(R.id.idETProjectName);
+        progressBar = view.findViewById(R.id.loading);
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ProjectName = editTextProjectName.getText().toString();
                 Description = editTextDescription.getText().toString();
-
+                progressBar.setVisibility(View.VISIBLE);
                 if (TextUtils.isEmpty(ProjectName) && TextUtils.isEmpty(Description)) {
                     editTextProjectName.setError("Please fill the Full Field");
                     editTextDescription.setError("Please fill the Full Field");
+                    progressBar.setVisibility(View.GONE);
                 } else if (TextUtils.isEmpty(ProjectName)) {
+                    progressBar.setVisibility(View.VISIBLE);
                     editTextProjectName.setError("Project Name is Compulsory");
+                    progressBar.setVisibility(View.GONE);
                 } else if (TextUtils.isEmpty(Description)) {
+                    progressBar.setVisibility(View.VISIBLE);
                     editTextDescription.setError("Description is Compulsory");
+                    progressBar.setVisibility(View.GONE);
                 } else {
-
+                    progressBar.setVisibility(View.VISIBLE);
                     addMyDataToFirestore(ProjectName, Description);
+
+                    editTextProjectName.setText("");
+                    editTextDescription.setText("");
                 }
             }
         });
+
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            String Name = firebaseUser.getEmail();
+            String[] Email = Name.split("@");
+            idTVName.setText(Email[0]);
+        }
+
 //        btnCalender = view.findViewById(R.id.calenderBtn);
 //        ViewDateTV = view.findViewById(R.id.idTVDueDate);
 //        BtnSubmit = view.findViewById(R.id.BtnSubmit);
@@ -169,6 +187,7 @@ public class CreateProjectFragment extends Fragment {
 //
 //            }
 //        });
+
         return view;
     }
 
@@ -179,9 +198,10 @@ public class CreateProjectFragment extends Fragment {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Toast.makeText(getContext(), "Data Is Enter to Firebase is Successfully!!", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
                 Fragment f = new HomePageFragment();
                 FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
-                fm.replace(R.id.container,f).commit();
+                fm.replace(R.id.container, f).commit();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

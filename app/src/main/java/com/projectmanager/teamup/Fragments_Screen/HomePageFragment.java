@@ -12,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,13 +36,17 @@ public class HomePageFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     Button btnCreate;
+    FloatingActionButton floatingActionButton;
     private CardAdapter adapter;
     private ArrayList<CardModal> arrayList;
+    private ProgressBar progressBar;
     private FirebaseFirestore db;
     TextView textView;
+
     public HomePageFragment() {
         // Required empty public constructor
     }
+
     RecyclerView recyclerView;
 //    ArrayList <Object> list;
 //    ArrayList <Object> getList(){
@@ -60,7 +66,8 @@ public class HomePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
+        progressBar = view.findViewById(R.id.loading);
+        floatingActionButton = view.findViewById(R.id.btnCreate);
         arrayList = new ArrayList<>();
 
         recyclerView = view.findViewById(R.id.container);
@@ -81,6 +88,7 @@ public class HomePageFragment extends Fragment {
         db.collection("TeamUp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                progressBar.setVisibility(View.VISIBLE);
                 if (!queryDocumentSnapshots.isEmpty()) {
 //                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
@@ -94,6 +102,7 @@ public class HomePageFragment extends Fragment {
                         // inside our arraylist which we have
                         // created for recycler view.
                         arrayList.add(c);
+                        progressBar.setVisibility(View.GONE);
                     }
                     adapter.notifyDataSetChanged();
                 } else {
@@ -104,6 +113,14 @@ public class HomePageFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment f = new CreateProjectFragment();
+                FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
+                fm.replace(R.id.container, f).commit();
             }
         });
         return view;

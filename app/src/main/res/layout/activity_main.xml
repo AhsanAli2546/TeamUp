@@ -6,11 +6,20 @@
     android:layout_height="match_parent"
     android:id="@+id/conta"
     tools:context=".Activity_Screen.MainActivity">
-<FrameLayout
-    android:layout_marginBottom="?attr/actionBarSize"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/container"/>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+   <androidx.appcompat.widget.Toolbar
+       android:background="@color/purple_700"
+       android:id="@+id/TopMenu"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
+    </com.google.android.material.appbar.AppBarLayout>
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize" />
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
