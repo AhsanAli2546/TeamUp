@@ -73,7 +73,11 @@ public class Register_Screen extends AppCompatActivity {
                 } else if (TextUtils.isEmpty(Email)&&TextUtils.isEmpty(userName) && TextUtils.isEmpty(pwd) && TextUtils.isEmpty(cnfPwd)) {
 
                     // checking if the text fields are empty or not.
-                    Toast.makeText(Register_Screen.this, "Please enter your credentials..", Toast.LENGTH_SHORT).show();
+                    emailEdit.setError("Email is Necessary");
+                    userNameEdt.setError("username is Necessary");
+                    passwordEdt.setError("Password is Necessary");
+                    confirmPwdEdt.setError("Password is Necessary");
+                    loadingPB.setVisibility(View.GONE);
                 } else {
 
                     // on below line we are creating a new user by passing email and password.

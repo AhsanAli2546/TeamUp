@@ -92,6 +92,10 @@ public class Login_Screen extends AppCompatActivity {
                     editor.commit();
                     // on below line validating the text input.
                     if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
+                        userNameEdt.setError("Email is Necessary");
+                        passwordEdt.setError("Password is Necessary");
+                        loadingPB.setVisibility(View.GONE);
+
                         Toast.makeText(Login_Screen.this, "Please enter your credentials..", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -117,6 +121,7 @@ public class Login_Screen extends AppCompatActivity {
                             } else {
                                 // hiding our progress bar and displaying a toast message.
                                 loadingPB.setVisibility(View.GONE);
+
                                 Toast.makeText(Login_Screen.this, "Please enter valid user credentials..", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -127,7 +132,7 @@ public class Login_Screen extends AppCompatActivity {
         ForgetPasswordTV.setOnClickListener(view -> {
 
             showRecoverPasswordDialog();
-            loadingPB.setVisibility(View.VISIBLE);
+            loadingPB.setVisibility(View.GONE);
         });
     }
 
@@ -136,11 +141,14 @@ public class Login_Screen extends AppCompatActivity {
     }
 
     private void showRecoverPasswordDialog() {
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Recover Password");
         ConstraintLayout linearLayout = new ConstraintLayout(this);
         final EditText emailet = new EditText(this);
-        emailet.setText("Email");
+        emailet.setHint("Email");
+        loadingPB.setVisibility(View.GONE);
         emailet.setMinEms(16);
         emailet.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         linearLayout.addView(emailet);
@@ -149,8 +157,14 @@ public class Login_Screen extends AppCompatActivity {
         builder.setPositiveButton("Recover", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 String email = emailet.getText().toString().trim();
-                beginRecovery(email);
+                if (TextUtils.isEmpty(email)){
+                    emailet.setError("Email Enter is Necessary");
+                }else {
+                    beginRecovery(email);
+                    loadingPB.setVisibility(View.GONE);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
