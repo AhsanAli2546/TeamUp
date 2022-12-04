@@ -1,9 +1,16 @@
 package com.projectmanager.teamup.Activity_Screen;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -17,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,6 +48,8 @@ public class Login_Screen extends AppCompatActivity {
     private ProgressBar loadingPB;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private static final String CHANNEL_ID = "MY Channel";
+    private static final int NOTIFICATION_ID = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +104,7 @@ public class Login_Screen extends AppCompatActivity {
                                 // on below line we are hiding our progress bar.
                                 loadingPB.setVisibility(View.GONE);
                                 Toast.makeText(Login_Screen.this, "Login Successful..", Toast.LENGTH_SHORT).show();
+
 //                                Fragment  f = new ProfilePageFragment();
 //                                FragmentManager fm= getSupportFragmentManager();
 //                                FragmentTransaction ft = fm.beginTransaction().add(R.id.container,f);
@@ -102,6 +113,7 @@ public class Login_Screen extends AppCompatActivity {
                                 Intent i = new Intent(Login_Screen.this, MainActivity.class);
                                 startActivity(i);
                                 finish();
+                                createNotificationChannel();
                             } else {
                                 // hiding our progress bar and displaying a toast message.
                                 loadingPB.setVisibility(View.GONE);
@@ -117,6 +129,10 @@ public class Login_Screen extends AppCompatActivity {
             showRecoverPasswordDialog();
             loadingPB.setVisibility(View.VISIBLE);
         });
+    }
+
+    private void CcreateNotificationChannel() {
+
     }
 
     private void showRecoverPasswordDialog() {
@@ -184,4 +200,22 @@ public class Login_Screen extends AppCompatActivity {
 //            this.finish();
 //        }
 //    }
+private void createNotificationChannel() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        CharSequence name = getString(R.string.channel_name);
+        String description = getString(R.string.channel_description);
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+    }
+
+}
 }

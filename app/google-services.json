@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1026471841895-bkjprkare7hkjn57anjup2fbsce94ikf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projectmanager.teamup",
+            "certificate_hash": "9126a99d59fb66e8e19e3386757727bd9ac74a96"
+          }
+        },
+        {
           "client_id": "1026471841895-4a6has9fg369hf5bqdvi7n5k2e4a95j8.apps.googleusercontent.com",
           "client_type": 3
         }

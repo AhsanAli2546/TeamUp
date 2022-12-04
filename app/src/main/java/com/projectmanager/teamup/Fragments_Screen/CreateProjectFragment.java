@@ -1,8 +1,17 @@
 package com.projectmanager.teamup.Fragments_Screen;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -38,6 +47,8 @@ public class CreateProjectFragment extends Fragment {
     private ProgressBar progressBar;
     public String ProjectName, Description, Name;
     private FirebaseFirestore db;
+    private static final String CHANNEL_ID = "MY Channel";
+    private static final int NOTIFICATION_ID = 100;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -103,10 +114,11 @@ public class CreateProjectFragment extends Fragment {
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     addMyDataToFirestore(ProjectName, Description);
-
                     editTextProjectName.setText("");
                     editTextDescription.setText("");
+                    createNotificationChannel();
                 }
+
             }
         });
 
@@ -194,6 +206,7 @@ public class CreateProjectFragment extends Fragment {
     private void addMyDataToFirestore(String projectName, String description) {
         CollectionReference dbTeamUp = db.collection("TeamUp");
         CardModal cardModal = new CardModal(projectName, description);
+
         dbTeamUp.add(cardModal).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
@@ -202,6 +215,7 @@ public class CreateProjectFragment extends Fragment {
                 Fragment f = new HomePageFragment();
                 FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
                 fm.replace(R.id.container, f).commit();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -209,5 +223,27 @@ public class CreateProjectFragment extends Fragment {
                 Toast.makeText(getContext(), "Fail to add Data \n" + e, Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.Enter_name);
+            String Description = getString(R.string.Enter_Description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            channel.setDescription(Description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+    }
+
+
 }

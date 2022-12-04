@@ -5,12 +5,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +25,9 @@ import com.projectmanager.teamup.R;
 
 public class ProfilePageFragment extends Fragment {
 
-    private Button Logout,MapOffice;
+    private Button Logout, MapOffice;
     private FirebaseAuth mAuth;
+    private ImageView DP;
     private TextView MyEmail;
 //    String Email;
 
@@ -35,12 +38,12 @@ public class ProfilePageFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
+        DP = view.findViewById(R.id.picId);
         Logout = view.findViewById(R.id.LogoutBtn);
         MyEmail = view.findViewById(R.id.CatchEmail);
         mAuth = FirebaseAuth.getInstance();
@@ -52,20 +55,27 @@ public class ProfilePageFragment extends Fragment {
         MapOffice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(),Office.class));
+                startActivity(new Intent(getActivity(), Office.class));
             }
         });
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                    mAuth.signOut();
+                mAuth.signOut();
             }
         });
 
 //        Bundle bundle = getArguments();
 
-
+        DP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment f = new BlankFragment();
+                FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
+                fm.replace(R.id.container, f).commit();
+            }
+        });
 
         return view;
     }
@@ -79,7 +89,7 @@ public class ProfilePageFragment extends Fragment {
             String Email;
             Email = firebaseUser.getEmail();
             MyEmail.setText(Email);
-            Log.d("Profile: Email: ",Email);
+            Log.d("Profile: Email: ", Email);
 
 
         } else {

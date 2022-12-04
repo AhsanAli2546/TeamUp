@@ -5,22 +5,18 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.projectmanager.teamup.Activity_Screen.Detail_Activity;
 import com.projectmanager.teamup.Modal.CardModal;
 import com.projectmanager.teamup.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     Context context;
@@ -46,6 +42,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull CardAdapter.ViewHolder holder, int position) {
         CardModal cardModal =  cardModals.get(position);
         holder.TVText.setText(cardModal.getTVTitle());
+        cardModal.getDescription();
 //        cardModal.getDescription();
         holder.BtnShare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,12 +75,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         holder.DetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Click On More Option", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, Detail_Activity.class);
+                i.putExtra("TVTitle",cardModal.getTVTitle());
+                i.putExtra("Description",cardModal.getDescription());
+                context.startActivities(new Intent[]{i});
+//                Toast.makeText(context, "Click On More Option", Toast.LENGTH_SHORT).show();
 //                showMoreOption(holder.DetBtn,uid,);
             }
         });
 
+
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -105,7 +109,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             TVText = itemView.findViewById(R.id.TVTitle);
-            DetBtn = itemView.findViewById(R.id.DetailBtn);
+            DetBtn = itemView.findViewById(R.id.btnDetail);
             BtnShare = itemView.findViewById(R.id.idshareBtn);
 
         }
