@@ -4,7 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/activity_detail.xml" value="0.1" />
+        <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/activity_login_screen.xml" value="0.1" />
+        <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/activity_office.xml" value="0.1796875" />
+        <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/activity_register_screen.xml" value="0.1" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/card_items_design.xml" value="0.1796875" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/fragment_blank.xml" value="0.1" />
@@ -12,6 +15,7 @@
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/fragment_detail.xml" value="0.1796875" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/fragment_home_page.xml" value="0.1648148148148148" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/fragment_profile_page.xml" value="0.1" />
+        <entry key="..\:/MAD Project/TeamUp/app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="..\:/MAD Project/TeamUp/app/src/main/res/menu/top_menu.xml" value="0.1" />
         <entry key="..\:/MAD/TeamUp-fe65890961f4372051bb5c070de64d77413bc262/app/src/main/res/layout/activity_card_view.xml" value="0.1" />
         <entry key="..\:/MAD/TeamUp-fe65890961f4372051bb5c070de64d77413bc262/app/src/main/res/layout/activity_help_fragment_with.xml" value="0.1796875" />

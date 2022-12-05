@@ -43,6 +43,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         CardModal cardModal =  cardModals.get(position);
         holder.TVText.setText(cardModal.getTVTitle());
         cardModal.getDescription();
+        holder.DetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, Detail_Activity.class);
+                i.putExtra("TVTitle",cardModal.getTVTitle());
+                i.putExtra("Description",cardModal.getDescription());
+                context.startActivities(new Intent[]{i});
+//                Toast.makeText(context, "Click On More Option", Toast.LENGTH_SHORT).show();
+//                showMoreOption(holder.DetBtn,uid,);
+            }
+        });
 //        cardModal.getDescription();
         holder.BtnShare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,17 +83,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             }
         });
 
-        holder.DetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(context, Detail_Activity.class);
-                i.putExtra("TVTitle",cardModal.getTVTitle());
-                i.putExtra("Description",cardModal.getDescription());
-                context.startActivities(new Intent[]{i});
-//                Toast.makeText(context, "Click On More Option", Toast.LENGTH_SHORT).show();
-//                showMoreOption(holder.DetBtn,uid,);
-            }
-        });
+
 
 
     }
@@ -99,6 +100,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         this.cardModals=arrayList;
         notifyDataSetChanged();
     }
+
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

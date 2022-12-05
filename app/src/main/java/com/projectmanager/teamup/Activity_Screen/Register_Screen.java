@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.projectmanager.teamup.R;
 
 public class Register_Screen extends AppCompatActivity {
@@ -24,7 +27,7 @@ public class Register_Screen extends AppCompatActivity {
     // creating variables for edit text and textview,
     // firebase auth, button and progress bar.
     private EditText userNameEdt, passwordEdt, confirmPwdEdt, emailEdit;
-    private TextView loginTV;
+
     private Button registerBtn;
     private FirebaseAuth mAuth;
     private ProgressBar loadingPB;
@@ -33,18 +36,27 @@ public class Register_Screen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_screen);
+        loadingPB = findViewById(R.id.idProgressBar);
 
         // initializing all our variables.
-        userNameEdt = findViewById(R.id.idEdtUserName);
-        passwordEdt = findViewById(R.id.idEdtPassword);
-        emailEdit = findViewById(R.id.idEmailEdt);
-        loadingPB = findViewById(R.id.idProgressBar);
-        confirmPwdEdt = findViewById(R.id.idEdtConfirmPassword);
-        loginTV = findViewById(R.id.idTVLoginUser);
+
         registerBtn = findViewById(R.id.idBtnRegister);
         mAuth = FirebaseAuth.getInstance();
 
         // adding on click for login tv.
+
+        UserData();
+        // adding click listener for register button.
+
+    }
+
+    private void UserData() {
+        userNameEdt = findViewById(R.id.idEdtUserName);
+        passwordEdt = findViewById(R.id.idEdtPassword);
+        emailEdit = findViewById(R.id.idEmailEdt);
+        confirmPwdEdt = findViewById(R.id.idEdtConfirmPassword);
+        TextView loginTV = findViewById(R.id.idTVLoginUser);
+
         loginTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,18 +66,18 @@ public class Register_Screen extends AppCompatActivity {
             }
         });
 
-        // adding click listener for register button.
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // hiding our progress bar.
-                loadingPB.setVisibility(View.VISIBLE);
 
-                // getting data from our edit text.
+                loadingPB.setVisibility(View.VISIBLE);
                 String Email = emailEdit.getText().toString();
                 String userName = userNameEdt.getText().toString();
                 String pwd = passwordEdt.getText().toString();
                 String cnfPwd = confirmPwdEdt.getText().toString();
+
+                // getting data from our edit text.
 
                 // checking if the password and confirm password is equal or not.
                 if (!pwd.equals(cnfPwd)) {
@@ -76,7 +88,7 @@ public class Register_Screen extends AppCompatActivity {
                     emailEdit.setError("Email is Necessary");
                     userNameEdt.setError("username is Necessary");
                     passwordEdt.setError("Password is Necessary");
-                    confirmPwdEdt.setError("Password is Necessary");
+                    confirmPwdEdt.setError("Confirm Password is Necessary");
                     loadingPB.setVisibility(View.GONE);
                 } else {
 
@@ -89,10 +101,18 @@ public class Register_Screen extends AppCompatActivity {
 
                                 // in on success method we are hiding our progress bar and opening a login activity.
                                 loadingPB.setVisibility(View.GONE);
-                                Toast.makeText(Register_Screen.this, "User Registered..", Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(Register_Screen.this, Login_Screen.class);
-                                startActivity(i);
-                                finish();
+                                sendVarification();
+                                FirebaseUser mUser = mAuth.getCurrentUser();
+                                if(mAuth!=null){
+                                    String uid = mUser.getUid();
+                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("User").child(uid);
+                                    DatabaseReference userRef = myRef.child("Email");
+                                    userRef.setValue(Email);
+                                }
+//                                Toast.makeText(Register_Screen.this, "User Registered..", Toast.LENGTH_SHORT).show();
+//                                Intent i = new Intent(Register_Screen.this, Login_Screen.class);
+//                                startActivity(i);
+//                                finish();
                             } else {
 
                                 // in else condition we are displaying a failure toast message.
@@ -105,4 +125,28 @@ public class Register_Screen extends AppCompatActivity {
             }
         });
     }
+
+    private void sendVarification() {
+        FirebaseUser firebaseUser=mAuth.getCurrentUser();
+        if(firebaseUser!=null)
+        {
+            firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+                        Toast.makeText(Register_Screen.this,"Registration Successful.Verification mail sent successfully..",Toast.LENGTH_LONG).show();
+                        mAuth.signOut();
+                        finish();
+                        startActivity(new Intent(Register_Screen.this,Login_Screen.class));
+                    }
+                    else
+                    {
+                        Toast.makeText(Register_Screen.this,"Error occurred sending verification mail..",Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+    }
+
 }

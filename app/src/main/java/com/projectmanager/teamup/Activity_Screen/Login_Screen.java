@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -187,6 +191,16 @@ public class Login_Screen extends AppCompatActivity {
 
                     loadingPB.setVisibility(View.GONE);
                     Toast.makeText(Login_Screen.this, "Done sent", Toast.LENGTH_LONG).show();
+                    ConstraintLayout linearLayout = new ConstraintLayout(Login_Screen.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Login_Screen.this);
+                    final TextView textView = new TextView(Login_Screen.this);
+                    linearLayout.addView(textView);
+                    textView.setText("Check You Inbox Or Spam Folder\nEmail: ");
+                    textView.setTextColor(Color.RED);
+                    builder.setView(linearLayout);
+
+
+
                 } else {
                     Toast.makeText(Login_Screen.this, "Error Occurred", Toast.LENGTH_LONG).show();
                 }
@@ -215,21 +229,44 @@ public class Login_Screen extends AppCompatActivity {
 //        }
 //    }
 private void createNotificationChannel() {
+//    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//            .setSmallIcon(R.drawable.notification)
+//            .setContentTitle("Login")
+//            .setContentText("Login Successfully...!!")
+//            .setPriority(NotificationCompat.PRIORITY_HIGH);
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        CharSequence name = getString(R.string.channel_name);
-        String description = getString(R.string.channel_description);
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.enableLights(true);
-        channel.enableVibration(true);
-        channel.setDescription(description);
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
-    }
+
+    NotificationCompat.Builder builder =
+            new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.notification)
+                    .setContentTitle("Notifications Example")
+                    .setContentText("This is a test notification");
+
+    Intent notificationIntent = new Intent(this, MainActivity.class);
+    PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT);
+    builder.setContentIntent(contentIntent);
+
+    // Add as notification
+    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    manager.notify(0, builder.build());
+
+
+
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//        CharSequence name = getString(R.string.channel_name);
+//        String description = getString(R.string.channel_description);
+//        int importance = NotificationManager.IMPORTANCE_HIGH;
+//        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+//        channel.enableLights(true);
+//        channel.enableVibration(true);
+//        channel.setDescription(description);
+//        // Register the channel with the system; you can't change the importance
+//        // or other notification behaviors after this
+//        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//        notificationManager.createNotificationChannel(channel);
+//    }
 
 }
 }

@@ -21,6 +21,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -38,6 +44,7 @@ public class HomePageFragment extends Fragment {
     private FirebaseAuth mAuth;
     Button btnCreate;
     SearchView idSearch;
+    private DatabaseReference mIncomeDatabase;
     FloatingActionButton floatingActionButton;
     private CardAdapter adapter;
     private ArrayList<CardModal> arrayList;
@@ -56,6 +63,14 @@ public class HomePageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+        mAuth=FirebaseAuth.getInstance();
+        FirebaseUser mUser=mAuth.getCurrentUser();
+        if(mAuth!=null) {
+            String uid = mUser.getUid();
+
+            mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
+        }
+
         idSearch = view.findViewById(R.id.idSearch);
         idSearch.clearFocus();
         db = FirebaseFirestore.getInstance();
@@ -79,6 +94,7 @@ public class HomePageFragment extends Fragment {
         adapter = new CardAdapter(arrayList, getContext());
         //setting adapter to recyclerview
         recyclerView.setAdapter(adapter);
+
         db.collection("TeamUp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

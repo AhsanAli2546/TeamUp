@@ -13,19 +13,31 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.projectmanager.teamup.Activity_Screen.MainActivity;
+import com.projectmanager.teamup.Modal.Image_View;
 import com.projectmanager.teamup.R;
 
 import java.io.IOException;
@@ -39,9 +51,11 @@ public class BlankFragment extends Fragment {
     private Button BacKBtn, UploadBtn;
     private CircleImageView circleImageView;
     private Uri filePath;
+    private FirebaseAuth mAuth;
     private final int PICK_IMAGE_REQUEST = 22;
     FirebaseStorage storage;
     StorageReference storageReference;
+    private FirebaseFirestore db;
 
     public BlankFragment() {
         // Required empty public constructor
@@ -53,10 +67,30 @@ public class BlankFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_blank, container, false);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         UploadBtn = view.findViewById(R.id.BtnUpload);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         BacKBtn = view.findViewById(R.id.BacKBtn);
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference imagesRef = rootRef.child("image");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String url = ds.getValue(String.class);
+//                    Glide.with(getContext()).using(new BlankFragment()).load(url).into(circleImageView);
+                    Log.d("TAG", url);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        imagesRef.addListenerForSingleValueEvent(valueEventListener);
         BacKBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,13 +122,13 @@ public class BlankFragment extends Fragment {
                     = new ProgressDialog(getContext());
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
-
+            String Image = UUID.randomUUID().toString();
             // Defining the child of storageReference
             StorageReference ref
                     = storageReference
                     .child(
                             "images/"
-                                    + UUID.randomUUID().toString());
+                                    + Image);
 
             // adding listeners on upload
             // or failure of image
@@ -114,6 +148,8 @@ public class BlankFragment extends Fragment {
                                                     "Image Uploaded!!",
                                                     Toast.LENGTH_SHORT)
                                             .show();
+
+                                    addMyDataToFirestore(Image);
                                 }
                             })
 
@@ -149,6 +185,23 @@ public class BlankFragment extends Fragment {
                             });
 
         }
+    }
+
+    private void addMyDataToFirestore(String image) {
+        CollectionReference dbTeamUp = db.collection("image");
+        Image_View imageView = new Image_View(image);
+        dbTeamUp.add(imageView).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(getContext(), "Data Is Enter to Firebase is Successfully!!", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void SelectImage() {
