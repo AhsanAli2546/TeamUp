@@ -77,11 +77,12 @@ public class Login_Screen extends AppCompatActivity {
                 // on below line opening a login activity.
                 Intent i = new Intent(Login_Screen.this, Register_Screen.class);
                 startActivity(i);
+                finish();
             }
         });
         if (sharedPreferences.contains("email")) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        } else {
+        }
             // adding on click listener for our login button.
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,6 +93,7 @@ public class Login_Screen extends AppCompatActivity {
                     // getting data from our edit text on below line.
                     String email = userNameEdt.getText().toString();
                     String password = passwordEdt.getText().toString();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("email", email);
                     editor.putString("password", password);
                     editor.commit();
@@ -133,7 +135,7 @@ public class Login_Screen extends AppCompatActivity {
                     });
                 }
             });
-        }
+
         ForgetPasswordTV.setOnClickListener(view -> {
 
             showRecoverPasswordDialog();

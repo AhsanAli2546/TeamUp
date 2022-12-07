@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -29,6 +31,8 @@ public class ProfilePageFragment extends Fragment {
     private FirebaseAuth mAuth;
     private ImageView DP;
     private TextView MyEmail;
+    private static final String CHANNEL_ID = "MY Channel";
+    private static final int NOTIFICATION_ID = 100;
 //    String Email;
 
     public ProfilePageFragment() {
@@ -36,7 +40,26 @@ public class ProfilePageFragment extends Fragment {
 
         // Required empty public constructor
     }
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            String Email;
+            Email = firebaseUser.getEmail();
+            MyEmail.setText(Email);
+            Log.d("Profile: Email: ", Email);
+
+
+        } else {
+
+            mAuth.signOut();
+
+        }
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,8 +84,10 @@ public class ProfilePageFragment extends Fragment {
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+             startActivity(new Intent(getActivity(),Login_Screen.class));
+                createNotificationChannel();
 
-                mAuth.signOut();
+
             }
         });
 
@@ -80,23 +105,19 @@ public class ProfilePageFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            String Email;
-            Email = firebaseUser.getEmail();
-            MyEmail.setText(Email);
-            Log.d("Profile: Email: ", Email);
+    private void createNotificationChannel() {
 
 
-        } else {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification)
+                .setContentTitle("Logout")
+                .setContentText("Logout Successfully...!!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-            mAuth.signOut();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
 
-        }
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+
 
 
     }
