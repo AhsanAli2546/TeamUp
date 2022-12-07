@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -237,22 +238,16 @@ private void createNotificationChannel() {
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
 
-    NotificationCompat.Builder builder =
-            new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.notification)
-                    .setContentTitle("Notifications Example")
-                    .setContentText("This is a test notification");
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.notification)
+            .setContentTitle("Login")
+            .setContentText("Login Successfully...!!")
+            .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-    Intent notificationIntent = new Intent(this, MainActivity.class);
-    PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT);
-    builder.setContentIntent(contentIntent);
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-    // Add as notification
-    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    manager.notify(0, builder.build());
-
-
+// notificationId is a unique int for each notification that you must define
+    notificationManager.notify(NOTIFICATION_ID, builder.build());
 
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //        CharSequence name = getString(R.string.channel_name);

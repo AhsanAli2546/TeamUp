@@ -93,9 +93,7 @@ public class ProfilePageFragment extends Fragment {
 
 
         } else {
-            getFragmentManager().beginTransaction().detach(ProfilePageFragment.this).attach(ProfilePageFragment.this).commit();
-            Toast.makeText(getContext(), "Logout Successfully...!!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getActivity(), Login_Screen.class));
+
             mAuth.signOut();
 
         }

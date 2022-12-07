@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -230,18 +232,17 @@ public class CreateProjectFragment extends Fragment {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.Enter_name);
-            String Description = getString(R.string.Enter_Description);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.enableLights(true);
-            channel.enableVibration(true);
-            channel.setDescription(Description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                    .setSmallIcon(R.drawable.notification)
+                    .setContentTitle("Insert")
+                    .setContentText("Insert Data Successfully...!")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+
+// notificationId is a unique int for each notification that you must define
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
+
 
     }
 
